@@ -26,6 +26,7 @@ public class BotRunnable implements Runnable {
     @Override
     public void run() {
         for (int j = 0; j < messageCount; j++) {
+            System.out.println("смс пошла нахуй");
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             headers.set("Accept", "*/*");

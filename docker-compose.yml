@@ -20,6 +20,12 @@ services:
       - 2000:2000
     networks:
       - network-1
+  fontend:
+    image: ge0rg25/webinar-spam-front
+    ports:
+      - 80:80
+    depends_on:
+      - backend
 
 networks:
   network-1:
