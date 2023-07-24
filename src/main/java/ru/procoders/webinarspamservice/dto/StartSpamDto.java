@@ -10,7 +10,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StartSpamDto {
 
-    String url;
+    @JsonProperty("webinar_id")
+    String webinarId;
 
     String message;
 

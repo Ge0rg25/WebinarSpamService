@@ -1,6 +1,4 @@
 package ru.procoders.webinarspamservice.services;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -27,6 +25,7 @@ public class SpamLogic implements Runnable {
         for (int i = 0; i < startSpamDto.getBotsCount(); i++) {
             String botName = UUID.randomUUID().toString();
             String sessionId;
+            String webinarUrl = "https://events.webinar.ru/api/eventsessions/"+ startSpamDto.getWebinarId();
 
 
             HttpHeaders headers = new HttpHeaders();
@@ -42,9 +41,9 @@ public class SpamLogic implements Runnable {
             headers.set("sec-ch-ua-platform", "\"macOS\"");
             HttpEntity httpEntity = new HttpEntity("nickname=" + botName + "&name=&secondName=&phone=", headers);
             try {
-                ResponseEntity<CreatedBotResponse> response = restTemplate.postForEntity(startSpamDto.getUrl() + "/guestlogin", httpEntity, CreatedBotResponse.class);
+                ResponseEntity<CreatedBotResponse> response = restTemplate.postForEntity(webinarUrl + "/guestlogin", httpEntity, CreatedBotResponse.class);
                 sessionId = response.getBody().getUser().get("sessionId");
-                Thread botThread = new Thread(new BotRunnable(startSpamDto.getMessageCount(), sessionId, messageForDumb, restTemplate, startSpamDto.getUrl()));
+                Thread botThread = new Thread(new BotRunnable(startSpamDto.getMessageCount(), sessionId, messageForDumb, restTemplate, webinarUrl));
                 botThread.start();
             }catch (Exception e){
                 System.out.print("Ебучий тайм аут. Ребята, у нас одному боту пиздец");
