@@ -12,6 +12,7 @@ services:
       - 5432:5432
     networks:
       - network-1
+    restart: always
   backend:
     image: ge0rg25/webinar-spam-back
     depends_on:
@@ -20,12 +21,14 @@ services:
       - 2000:2000
     networks:
       - network-1
+    restart: always
   fontend:
     image: ge0rg25/webinar-spam-front
     ports:
       - 80:80
     depends_on:
       - backend
+    restart: always
 
 networks:
   network-1:
