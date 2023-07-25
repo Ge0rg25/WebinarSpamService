@@ -3,20 +3,8 @@ version: "1.0"
 
 
 services:
-  database:
-    image: postgres:14
-    environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
-    ports:
-      - 5432:5432
-    networks:
-      - network-1
-    restart: always
   backend:
-    image: ge0rg25/webinar-spam-back
-    depends_on:
-      - database
+    image: localback
     ports:
       - 2000:2000
     networks:

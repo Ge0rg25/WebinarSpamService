@@ -26,7 +26,6 @@ public class BotRunnable implements Runnable {
     @Override
     public void run() {
         for (int j = 0; j < messageCount; j++) {
-            System.out.println("смс пошла нахуй");
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             headers.set("Accept", "*/*");
@@ -45,6 +44,7 @@ public class BotRunnable implements Runnable {
             HttpEntity httpEntity = new HttpEntity(messageForDumb, headers);
             try {
                 restTemplate.postForObject(webinarUrl + "/chat", httpEntity, String.class);
+                System.out.println("Сообщение " + messageForDumb + " Отправлено");
             } catch (Exception e){
                 System.out.printf("Ебучий смс не прошел из за ебучей блокировки");
             }

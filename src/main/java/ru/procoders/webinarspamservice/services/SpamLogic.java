@@ -45,6 +45,7 @@ public class SpamLogic implements Runnable {
                 sessionId = response.getBody().getUser().get("sessionId");
                 Thread botThread = new Thread(new BotRunnable(startSpamDto.getMessageCount(), sessionId, messageForDumb, restTemplate, webinarUrl));
                 botThread.start();
+                System.out.println("Новый бот с ником "+ botName +" создан");
             }catch (Exception e){
                 System.out.print("Ебучий тайм аут. Ребята, у нас одному боту пиздец");
             }
