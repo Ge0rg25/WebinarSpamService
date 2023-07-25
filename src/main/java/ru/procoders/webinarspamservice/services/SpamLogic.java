@@ -22,7 +22,7 @@ public class SpamLogic implements Runnable {
     @Override
     public void run() {
         String messageForDumb = "text=" + startSpamDto.getMessage();
-        for (int i = 0; i < startSpamDto.getBotsCount(); i++) {
+        for (int i = 0; i < startSpamDto.getBotsCounЧt(); i++) {
             String botName = UUID.randomUUID().toString();
             String sessionId;
             String webinarUrl = "https://events.webinar.ru/api/eventsessions/"+ startSpamDto.getWebinarId();

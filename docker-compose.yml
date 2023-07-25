@@ -4,14 +4,14 @@ version: "1.0"
 
 services:
   backend:
-    image: localback
+    image: ge0rg25/webinar-spam-back:latest
     ports:
       - 2000:2000
     networks:
       - network-1
     restart: always
   fontend:
-    image: ge0rg25/webinar-spam-front
+    image: ge0rg25/webinar-spam-front:latest
     ports:
       - 80:80
     depends_on:
