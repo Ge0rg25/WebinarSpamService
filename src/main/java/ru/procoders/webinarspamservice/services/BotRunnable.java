@@ -2,7 +2,6 @@ package ru.procoders.webinarspamservice.services;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 public class BotRunnable implements Runnable {
@@ -46,7 +45,7 @@ public class BotRunnable implements Runnable {
                 restTemplate.postForObject(webinarUrl + "/chat", httpEntity, String.class);
                 System.out.println("Сообщение " + messageForDumb + " Отправлено " + j + "раз");
             } catch (Exception e) {
-                System.out.printf("Ебучий смс не прошел из за ебучей блокировки");
+                System.out.println("Ебучий смс не прошел из за ебучей блокировки");
             }
         }
         Thread.currentThread().interrupt();
