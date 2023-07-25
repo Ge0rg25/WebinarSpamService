@@ -44,10 +44,11 @@ public class BotRunnable implements Runnable {
             HttpEntity httpEntity = new HttpEntity(messageForDumb, headers);
             try {
                 restTemplate.postForObject(webinarUrl + "/chat", httpEntity, String.class);
-                System.out.println("Сообщение " + messageForDumb + " Отправлено");
+                System.out.println("Сообщение " + messageForDumb + " Отправлено " + j + "раз");
             } catch (Exception e){
                 System.out.printf("Ебучий смс не прошел из за ебучей блокировки");
             }
         }
+        Thread.currentThread().interrupt();
     }
 }

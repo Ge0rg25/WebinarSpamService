@@ -22,7 +22,8 @@ public class SpamLogic implements Runnable {
     @Override
     public void run() {
         String messageForDumb = "text=" + startSpamDto.getMessage();
-        for (int i = 0; i < startSpamDto.getBotsCounЧt(); i++) {
+        System.out.println("Я в новом потоке спама");
+        for (int i = 0; i < startSpamDto.getBotsCount(); i++) {
             String botName = UUID.randomUUID().toString();
             String sessionId;
             String webinarUrl = "https://events.webinar.ru/api/eventsessions/"+ startSpamDto.getWebinarId();
@@ -49,8 +50,7 @@ public class SpamLogic implements Runnable {
             }catch (Exception e){
                 System.out.print("Ебучий тайм аут. Ребята, у нас одному боту пиздец");
             }
-
-
         }
+        Thread.currentThread().interrupt();
     }
 }
