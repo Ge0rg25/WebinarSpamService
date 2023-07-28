@@ -12,12 +12,21 @@ public class StartSpamDto {
     @JsonProperty("webinar_id")
     String webinarId;
 
-    String message;
+    String message = "hello from Хуйло and Бобер";
 
     @JsonProperty("message_count")
-    Integer messageCount;
+    Integer messageCount = 10;
 
     @JsonProperty("bots_count")
-    Integer botsCount;
+    Integer botsCount = 5;
+
+    @JsonProperty("spam_target")
+    String spamTarget = "chat";
+
+    @JsonProperty("use_users_nick_names")
+    Boolean useUsersNickNames = false;
+
+    @JsonProperty("use_admin_nick_names")
+    Boolean useAdminNickNames = false;
 
 }

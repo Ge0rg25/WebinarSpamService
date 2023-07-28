@@ -1,38 +1,41 @@
-package ru.procoders.webinarspamservice.services;
+package ru.procoders.webinarspamservice.utils;
 
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import ru.procoders.webinarspamservice.models.CreatedBotResponse;
+import ru.procoders.webinarspamservice.models.Participation;
+import ru.procoders.webinarspamservice.models.WebinarUsersNames;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+@Component
 @Slf4j
-public class BotRunnable implements Runnable {
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class WebinarSpamUtils {
 
-    RestTemplate restTemplate;
-    Integer messageCount;
-    String sessionId;
-    String messageForDumb;
 
-    String webinarUrl;
+    public List<Participation> getWebinarUsers(RestTemplate restTemplate, String webinarUrl) {
 
-    String spamTarget;
+        HttpHeaders headers = getRegisterHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>("nickname=namespicker&name=&secondName=&phone=", headers);
+        List<Participation> users = new ArrayList<>();
+        try {
+            ResponseEntity<CreatedBotResponse> response = restTemplate.postForEntity(webinarUrl + "/guestlogin", httpEntity, CreatedBotResponse.class);
+            String sessionId = response.getBody().getUser().get("sessionId");
+            log.info("Бот для получения имен участников конференции создан");
 
-    String botName;
 
-    public BotRunnable(Integer messageCount, String sessionId, String messageForDumb, RestTemplate restTemplate, String webinarUrl, String spamTarget, String botName) {
-        this.messageCount = messageCount;
-        this.sessionId = sessionId;
-        this.messageForDumb = messageForDumb;
-        this.restTemplate = restTemplate;
-        this.webinarUrl = webinarUrl;
-        this.spamTarget = spamTarget;
-        this.botName = botName;
-    }
-
-    @Override
-    public void run() {
-        for (int j = 0; j < messageCount; j++) {
-            HttpHeaders headers = new HttpHeaders();
+            headers = new HttpHeaders();
             headers.set("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
             headers.set("Accept", "*/*");
             headers.setConnection("keep-alive");
@@ -47,14 +50,32 @@ public class BotRunnable implements Runnable {
             headers.set("sec-ch-ua", "\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Google Chrome\";v=\"114\"");
             headers.set("sec-ch-ua-mobile", "?0");
             headers.set("sec-ch-ua-platform", "\"macOS\"");
-            HttpEntity httpEntity = new HttpEntity(messageForDumb, headers);
-            try {
-                restTemplate.postForObject(webinarUrl + "/" + spamTarget, httpEntity, String.class);
-                log.info("Сообщение " + messageForDumb + " Отправлено " + j + " раз ботом " + botName);
-            } catch (Exception e) {
-                log.warn("Ебучий смс не прошел из за ебучей блокировки");
-            }
+
+            httpEntity = new HttpEntity<>(headers);
+            ResponseEntity<WebinarUsersNames> result = restTemplate.exchange(webinarUrl + "/model", HttpMethod.GET, httpEntity, WebinarUsersNames.class);
+            users = Objects.requireNonNull(result.getBody()).users;
+        } catch (Exception e) {
+            log.warn("хуй тебе а не имена || " + e.getMessage());
         }
-        Thread.currentThread().interrupt();
+
+        return users;
+
     }
+
+
+    public static HttpHeaders getRegisterHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("Accept", "application/json, text/javascript, */*; q=0.01");
+        headers.set("sec-ch-ua", "\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Google Chrome\";v=\"114\"");
+        headers.set("sec-ch-ua-mobile", "?0");
+        headers.set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
+        headers.set("X-Webinar-Referrer", "https://events.webinar.ru/65638895/1128606851/session/1868443042");
+        headers.set("Referer", "https://events.webinar.ru/65638895/1128606851/session/1868443042");
+        headers.set("atatus-apm-traceparent", "00-103b813339bf4ffce69deed2fa7fb8c8-adc32ed6adb2e3a5-01");
+        headers.set("X-Requested-With", "XMLHttpRequest");
+        headers.set("sec-ch-ua-platform", "\"macOS\"");
+        return headers;
+    }
+
 }
